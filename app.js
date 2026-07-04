@@ -517,6 +517,40 @@ document.querySelector("#notification-button").addEventListener("click", () => {
   );
 });
 
+const setupIphoneInstallGuide = () => {
+  const isIphoneOrIpad =
+    /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isStandalone =
+    window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const isWebAddress = location.protocol === "https:" || location.hostname === "localhost";
+  const wasDismissed = localStorage.getItem("misenote-install-guide-dismissed") === "true";
+  const guide = document.querySelector("#ios-install-guide");
+
+  if (isIphoneOrIpad && !isStandalone && isWebAddress && !wasDismissed) {
+    guide.hidden = false;
+  }
+
+  document.querySelector("#dismiss-install-guide").addEventListener("click", () => {
+    guide.hidden = true;
+    localStorage.setItem("misenote-install-guide-dismissed", "true");
+  });
+};
+
+const registerOfflineSupport = () => {
+  if (!("serviceWorker" in navigator) || location.protocol === "file:") return;
+
+  window.addEventListener("load", async () => {
+    try {
+      await navigator.serviceWorker.register("./service-worker.js");
+    } catch (error) {
+      console.warn("オフライン機能を開始できませんでした。", error);
+    }
+  });
+};
+
 updateDateLabels();
 calculateLiveSales();
 renderAll();
+setupIphoneInstallGuide();
+registerOfflineSupport();

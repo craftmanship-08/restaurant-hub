@@ -7,7 +7,14 @@
       name="description"
       content="飲食店の日報・売上・在庫をひとつにまとめる管理アプリ MiseNote"
     />
+    <meta name="theme-color" content="#123b2f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="MiseNote" />
     <title>MiseNote | 店舗管理</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -80,6 +87,21 @@
         </header>
 
         <div class="page-wrap">
+          <aside class="install-guide" id="ios-install-guide" hidden>
+            <img src="icons/icon-192.png" alt="" width="48" height="48" />
+            <div>
+              <strong>iPhoneのホーム画面に追加できます</strong>
+              <p>
+                Safariの共有ボタン
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 16V3M8 7l4-4 4 4M5 12v8h14v-8" />
+                </svg>
+                から「ホーム画面に追加」を選んでください。
+              </p>
+            </div>
+            <button id="dismiss-install-guide" type="button" aria-label="案内を閉じる">×</button>
+          </aside>
+
           <section class="view active" id="dashboard" aria-labelledby="dashboard-heading">
             <div class="welcome-row">
               <div>
