@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="飲食店の日報・売上・在庫をひとつにまとめる管理アプリ MiseNote"
+    />
+    <title>MiseNote | 店舗管理</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" data-target="dashboard" aria-label="MiseNote ホーム">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <span>
+            <strong>MiseNote</strong>
+            <small>店舗管理</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" aria-label="メインメニュー">
+          <button class="nav-item active" type="button" data-target="dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z" />
+            </svg>
+            <span>ホーム</span>
+          </button>
+          <button class="nav-item" type="button" data-target="reports">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 3h9l4 4v14H6V3Zm8 1.5V8h3.5M9 12h7M9 16h7" />
+            </svg>
+            <span>日報</span>
+          </button>
+          <button class="nav-item" type="button" data-target="sales">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 4v16h15M8 16l3-4 3 2 5-7" />
+            </svg>
+            <span>売上</span>
+          </button>
+          <button class="nav-item" type="button" data-target="inventory">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m4 7 8-4 8 4-8 4-8-4Zm0 0v10l8 4 8-4V7M12 11v10" />
+            </svg>
+            <span>在庫</span>
+            <span class="nav-badge" id="inventory-nav-badge">0</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="shop-avatar" aria-hidden="true">青</div>
+          <div>
+            <strong>青空キッチン</strong>
+            <small>試作店舗</small>
+          </div>
+          <span class="demo-dot" title="試作モード"></span>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="today-label">2026年7月5日</p>
+            <h1 id="page-title">おはようございます</h1>
+          </div>
+          <div class="topbar-actions">
+            <span class="save-status">
+              <span class="status-dot"></span>
+              この端末に自動保存
+            </span>
+            <button class="icon-button" id="notification-button" type="button" aria-label="お知らせ">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" />
+              </svg>
+              <span class="notification-mark"></span>
+            </button>
+          </div>
+        </header>
+
+        <div class="page-wrap">
+          <section class="view active" id="dashboard" aria-labelledby="dashboard-heading">
+            <div class="welcome-row">
+              <div>
+                <h2 id="dashboard-heading">今日のお店</h2>
+                <p>大切な数字と、やることをまとめました。</p>
+              </div>
+              <span class="open-badge"><span></span> 営業中</span>
+            </div>
+
+            <div class="metric-grid">
+              <article class="metric-card">
+                <div class="metric-icon mint">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2v20M17 6.5c0-2-2-3.5-5-3.5S7 4.2 7 6.5s2 3 5 3 5 1 5 3.5-2 4-5 4-5-1.5-5-3.5" />
+                  </svg>
+                </div>
+                <div class="metric-copy">
+                  <span>今日の売上</span>
+                  <strong id="metric-sales">¥0</strong>
+                  <small class="trend up" id="metric-sales-trend">前週比 +0%</small>
+                </div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-icon sky">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div class="metric-copy">
+                  <span>来店客数</span>
+                  <strong id="metric-guests">0 <em>名</em></strong>
+                  <small class="trend up" id="metric-guests-trend">前週比 +0%</small>
+                </div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-icon amber">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 2" />
+                  </svg>
+                </div>
+                <div class="metric-copy">
+                  <span>客単価</span>
+                  <strong id="metric-average">¥0</strong>
+                  <small class="trend neutral">売上 ÷ 客数</small>
+                </div>
+              </article>
+              <article class="metric-card warning-card">
+                <div class="metric-icon coral">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3 2.5 20h19L12 3ZM12 9v5M12 17.5v.5" />
+                  </svg>
+                </div>
+                <div class="metric-copy">
+                  <span>在庫アラート</span>
+                  <strong><span id="metric-alerts">0</span> <em>品目</em></strong>
+                  <small class="trend alert">確認が必要です</small>
+                </div>
+              </article>
+            </div>
+
+            <div class="dashboard-grid">
+              <article class="panel sales-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3>今週の売上</h3>
+                    <p>曜日ごとの売上推移</p>
+                  </div>
+                  <strong id="weekly-total">¥0</strong>
+                </div>
+                <div class="chart-wrap">
+                  <div class="chart-scale" aria-hidden="true">
+                    <span>15万</span><span>10万</span><span>5万</span><span>0</span>
+                  </div>
+                  <div class="bar-chart" id="sales-chart" aria-label="今週の売上グラフ"></div>
+                </div>
+              </article>
+
+              <article class="panel quick-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3>かんたん入力</h3>
+                    <p>よく使う記録をすぐ開けます</p>
+                  </div>
+                </div>
+                <div class="quick-actions">
+                  <button type="button" data-target="reports">
+                    <span class="quick-icon green">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 3h14v18H5V3ZM9 8h6M9 12h6M9 16h4" />
+                      </svg>
+                    </span>
+                    <span><strong>日報を書く</strong><small>今日の出来事を記録</small></span>
+                    <b>›</b>
+                  </button>
+                  <button type="button" data-target="sales">
+                    <span class="quick-icon blue">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 19V9M10 19V5M16 19v-7M22 19V2" />
+                      </svg>
+                    </span>
+                    <span><strong>売上を入力</strong><small>支払い方法ごとに記録</small></span>
+                    <b>›</b>
+                  </button>
+                  <button type="button" data-target="inventory">
+                    <span class="quick-icon orange">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m4 7 8-4 8 4-8 4-8-4Zm0 0v10l8 4 8-4V7" />
+                      </svg>
+                    </span>
+                    <span><strong>在庫を確認</strong><small>不足している食材を確認</small></span>
+                    <b>›</b>
+                  </button>
+                </div>
+              </article>
+            </div>
+
+            <div class="dashboard-grid lower-grid">
+              <article class="panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3>在庫のお知らせ</h3>
+                    <p>発注点を下回った食材</p>
+                  </div>
+                  <button class="text-button" type="button" data-target="inventory">すべて見る</button>
+                </div>
+                <div class="alert-list" id="dashboard-alert-list"></div>
+              </article>
+
+              <article class="panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3>最近の記録</h3>
+                    <p>入力された内容</p>
+                  </div>
+                </div>
+                <div class="activity-list" id="activity-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="reports" aria-labelledby="reports-heading">
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">DAILY REPORT</span>
+                <h2 id="reports-heading">日報</h2>
+                <p>その日の様子を残して、明日の営業につなげましょう。</p>
+              </div>
+            </div>
+
+            <div class="form-layout">
+              <form class="panel entry-form" id="report-form">
+                <div class="panel-heading form-title">
+                  <div>
+                    <h3>今日の日報を書く</h3>
+                    <p>必須項目は少なめにしています。</p>
+                  </div>
+                  <span class="draft-label">自動保存</span>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>日付</span>
+                    <input type="date" id="report-date" required />
+                  </label>
+                  <label>
+                    <span>記入者</span>
+                    <input type="text" id="report-author" value="店長" placeholder="例：山田" required />
+                  </label>
+                  <label>
+                    <span>天気</span>
+                    <select id="report-weather">
+                      <option>晴れ</option>
+                      <option>くもり</option>
+                      <option>雨</option>
+                      <option>雪</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>来店客数</span>
+                    <div class="input-suffix">
+                      <input type="number" id="report-guests" min="0" value="74" required />
+                      <span>名</span>
+                    </div>
+                  </label>
+                  <label class="full">
+                    <span>今日の出来事</span>
+                    <textarea
+                      id="report-note"
+                      rows="4"
+                      placeholder="例：ランチは12時台に混雑。季節メニューが好評でした。"
+                      required
+                    ></textarea>
+                  </label>
+                  <label class="full">
+                    <span>明日への引き継ぎ</span>
+                    <textarea
+                      id="report-handover"
+                      rows="3"
+                      placeholder="例：トマトの在庫が少ないため、朝一で納品を確認。"
+                    ></textarea>
+                  </label>
+                </div>
+                <div class="form-actions">
+                  <span><b id="report-char-count">0</b>文字入力</span>
+                  <button class="primary-button" type="submit">日報を保存する</button>
+                </div>
+              </form>
+
+              <aside class="panel records-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3>最近の日報</h3>
+                    <p>新しい順に表示しています</p>
+                  </div>
+                </div>
+                <div id="report-list" class="record-list"></div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="view" id="sales" aria-labelledby="sales-heading">
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">SALES</span>
+                <h2 id="sales-heading">売上管理</h2>
+                <p>支払い方法ごとの金額を入れると、自動で合計します。</p>
+              </div>
+              <div class="section-summary">
+                <span>今週の合計</span>
+                <strong id="sales-page-week-total">¥0</strong>
+              </div>
+            </div>
+
+            <div class="sales-layout">
+              <form class="panel entry-form compact" id="sales-form">
+                <div class="panel-heading form-title">
+                  <div>
+                    <h3>1日の売上を入力</h3>
+                    <p>税込の金額を入力してください。</p>
+                  </div>
+                </div>
+                <div class="form-grid">
+                  <label class="full">
+                    <span>日付</span>
+                    <input type="date" id="sales-date" required />
+                  </label>
+                  <label>
+                    <span>現金</span>
+                    <div class="input-prefix">
+                      <span>¥</span>
+                      <input class="money-input" type="number" id="sales-cash" min="0" value="43200" />
+                    </div>
+                  </label>
+                  <label>
+                    <span>カード・電子決済</span>
+                    <div class="input-prefix">
+                      <span>¥</span>
+                      <input class="money-input" type="number" id="sales-card" min="0" value="64700" />
+                    </div>
+                  </label>
+                  <label>
+                    <span>デリバリー</span>
+                    <div class="input-prefix">
+                      <span>¥</span>
+                      <input class="money-input" type="number" id="sales-delivery" min="0" value="12600" />
+                    </div>
+                  </label>
+                  <label>
+                    <span>その他</span>
+                    <div class="input-prefix">
+                      <span>¥</span>
+                      <input class="money-input" type="number" id="sales-other" min="0" value="0" />
+                    </div>
+                  </label>
+                </div>
+                <div class="calculated-total">
+                  <span>入力した売上の合計</span>
+                  <strong id="sales-live-total">¥120,500</strong>
+                </div>
+                <div class="form-actions right">
+                  <button class="primary-button" type="submit">売上を保存する</button>
+                </div>
+              </form>
+
+              <article class="panel sales-history-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h3>売上の履歴</h3>
+                    <p>直近7日分の記録</p>
+                  </div>
+                </div>
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>日付</th>
+                        <th>現金</th>
+                        <th>カード等</th>
+                        <th>デリバリー</th>
+                        <th>合計</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sales-table-body"></tbody>
+                  </table>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="inventory" aria-labelledby="inventory-heading">
+            <div class="section-heading">
+              <div>
+                <span class="section-kicker">INVENTORY</span>
+                <h2 id="inventory-heading">在庫管理</h2>
+                <p>食材の残りを確認し、入荷や使用をかんたんに記録できます。</p>
+              </div>
+              <button class="primary-button" id="open-item-dialog" type="button">
+                <span aria-hidden="true">＋</span> 食材を追加
+              </button>
+            </div>
+
+            <div class="inventory-summary">
+              <article>
+                <span>登録品目</span>
+                <strong id="inventory-total-count">0</strong>
+                <small>品目</small>
+              </article>
+              <article>
+                <span>在庫あり</span>
+                <strong id="inventory-good-count">0</strong>
+                <small>品目</small>
+              </article>
+              <article class="needs-attention">
+                <span>発注が必要</span>
+                <strong id="inventory-low-count">0</strong>
+                <small>品目</small>
+              </article>
+            </div>
+
+            <article class="panel inventory-panel">
+              <div class="inventory-toolbar">
+                <div class="search-box">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m20 20-4-4" />
+                  </svg>
+                  <input id="inventory-search" type="search" placeholder="食材を検索" />
+                </div>
+                <div class="filter-group" aria-label="在庫の絞り込み">
+                  <button class="filter-button active" type="button" data-filter="all">すべて</button>
+                  <button class="filter-button" type="button" data-filter="low">要発注</button>
+                  <button class="filter-button" type="button" data-filter="good">在庫あり</button>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table class="inventory-table">
+                  <thead>
+                    <tr>
+                      <th>食材名</th>
+                      <th>分類</th>
+                      <th>現在庫</th>
+                      <th>発注点</th>
+                      <th>状態</th>
+                      <th>数量を変更</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventory-table-body"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <dialog id="item-dialog">
+      <form method="dialog" id="item-form">
+        <div class="dialog-heading">
+          <div>
+            <span class="section-kicker">NEW ITEM</span>
+            <h2>食材を追加</h2>
+            <p>在庫として管理したい食材を登録します。</p>
+          </div>
+          <button class="dialog-close" type="button" id="close-item-dialog" aria-label="閉じる">×</button>
+        </div>
+        <div class="form-grid">
+          <label class="full">
+            <span>食材名</span>
+            <input id="item-name" type="text" placeholder="例：じゃがいも" required />
+          </label>
+          <label>
+            <span>分類</span>
+            <select id="item-category">
+              <option>野菜</option>
+              <option>肉・魚</option>
+              <option>乳製品</option>
+              <option>調味料</option>
+              <option>飲料</option>
+              <option>その他</option>
+            </select>
+          </label>
+          <label>
+            <span>単位</span>
+            <select id="item-unit">
+              <option>個</option>
+              <option>kg</option>
+              <option>本</option>
+              <option>パック</option>
+              <option>袋</option>
+              <option>L</option>
+            </select>
+          </label>
+          <label>
+            <span>現在の在庫</span>
+            <input id="item-quantity" type="number" min="0" step="0.1" value="10" required />
+          </label>
+          <label>
+            <span>発注する目安</span>
+            <input id="item-threshold" type="number" min="0" step="0.1" value="5" required />
+          </label>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancel-item-dialog">キャンセル</button>
+          <button class="primary-button" type="submit">追加する</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span class="toast-icon">✓</span>
+      <span id="toast-message">保存しました</span>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+# OSが自動で作る不要なファイル
+.DS_Store
+Thumbs.db
+
+# 開発中の一時ファイル
+*.log
+.tmp/
